@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Cadiac/choicest.svg?branch=master)](https://travis-ci.org/Cadiac/choicest)
+
 # Choicest
 
 To start your Phoenix server:
