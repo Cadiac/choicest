@@ -7,6 +7,7 @@ defmodule Choicest.Contestants do
   alias Choicest.Repo
 
   alias Choicest.Contestants.Image
+  alias Choicest.Contestants.Comparison
 
   @doc """
   Returns the list of images.
@@ -100,5 +101,39 @@ defmodule Choicest.Contestants do
   """
   def change_image(%Image{} = image) do
     Image.changeset(image, %{})
+  end
+
+
+  @doc """
+  Gets a list of comparisons on image.
+
+  Raises `Ecto.NoResultsError` if the Image does not exist.
+
+  ## Examples
+
+      iex> list_image_comparisons!(123)
+      [%Comparison{}, ...]
+
+      iex> list_image_comparisons!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def list_image_comparisons(id) do
+    won_against = Repo.all(
+      from c in Comparison,
+        join: w in assoc(c, :winner),
+      where: w.id == ^id,
+      select: c,
+      preload: [:loser]
+    )
+    lost_against = Repo.all(
+      from c in Comparison,
+        join: l in assoc(c, :loser),
+      where: l.id == ^id,
+      select: c,
+      preload: [:winner]
+    )
+
+    %{won_against: won_against, lost_against: lost_against}
   end
 end

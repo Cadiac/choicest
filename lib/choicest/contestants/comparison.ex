@@ -6,10 +6,11 @@ defmodule Choicest.Contestants.Comparison do
 
   schema "comparisons" do
     field :session_id, :string
-    field :winner_id, :id
-    field :loser_id, :id
 
     timestamps()
+
+    belongs_to :winner, Choicest.Contestants.Image
+    belongs_to :loser, Choicest.Contestants.Image
   end
 
   @doc false

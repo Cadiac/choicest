@@ -12,6 +12,9 @@ defmodule Choicest.Contestants.Image do
     field :url, :string
 
     timestamps()
+
+    has_many :wins, Comparison
+    has_many :losses, Comparison
   end
 
   @doc false

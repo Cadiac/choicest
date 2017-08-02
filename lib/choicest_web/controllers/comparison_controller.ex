@@ -7,9 +7,9 @@ defmodule ChoicestWeb.ComparisonController do
 
   action_fallback ChoicestWeb.FallbackController
 
-  def index(conn, _params) do
-    images = Contestants.list_images()
-    render(conn, "index.json", images: images)
+  def index(conn, %{"image_id" => image_id}) do
+    comparisons = Contestants.list_image_comparisons(image_id)
+    render(conn, "index.json", comparisons: comparisons)
   end
 
   def create(conn, %{"image" => image_params}) do
