@@ -112,13 +112,13 @@ defmodule Choicest.Contestants do
   ## Examples
 
       iex> list_image_comparisons!(123)
-      [%Comparison{}, ...]
+      %{lost_against: [%Choicest.Contestants.Comparison{}, ...], won_against: [%Choicest.Contestants.Comparison{}, ...]}
 
       iex> list_image_comparisons!(456)
-      ** (Ecto.NoResultsError)
+      %{lost_against: [], won_against: []}
 
   """
-  def list_image_comparisons(id) do
+  def list_image_comparisons!(id) do
     won_against = Repo.all(
       from c in Comparison,
         join: w in assoc(c, :winner),

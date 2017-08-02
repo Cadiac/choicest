@@ -1,6 +1,7 @@
 defmodule Choicest.Contestants.Comparison do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Choicest.Contestants.Image
   alias Choicest.Contestants.Comparison
 
 
@@ -9,8 +10,8 @@ defmodule Choicest.Contestants.Comparison do
 
     timestamps()
 
-    belongs_to :winner, Choicest.Contestants.Image
-    belongs_to :loser, Choicest.Contestants.Image
+    belongs_to :winner, Image
+    belongs_to :loser, Image
   end
 
   @doc false
