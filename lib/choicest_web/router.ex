@@ -20,7 +20,11 @@ defmodule ChoicestWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", ChoicestWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", ChoicestWeb do
+    pipe_through :api
+
+    resources "/images", ImageController, except: [:new, :edit] do
+      resources "/comparisons", ComparisonController, except: [:new, :edit]
+    end
+  end
 end
