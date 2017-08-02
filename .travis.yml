@@ -8,7 +8,7 @@ otp_release:
 
 before_script:
   - mix ecto.create && mix ecto.migrate
-  - cd assets && npm install
+  - cd assets && npm install && cd ..
 
 services:
   - postgresql
