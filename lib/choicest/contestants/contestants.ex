@@ -112,7 +112,7 @@ defmodule Choicest.Contestants do
   ## Examples
 
       iex> list_image_comparisons!(123)
-      %{lost_against: [%Choicest.Contestants.Comparison{}, ...], won_against: [%Choicest.Contestants.Comparison{}, ...]}
+      %{lost_against: [%Comparison{}, ...], won_against: [%Comparison{}, ...]}
 
       iex> list_image_comparisons!(456)
       %{lost_against: [], won_against: []}

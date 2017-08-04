@@ -69,5 +69,10 @@ defmodule Choicest.ContestantsTest do
       image = image_fixture()
       assert %Ecto.Changeset{} = Contestants.change_image(image)
     end
+
+    test "list_image_comparisons returns empty comparisons for image with no comparisons" do
+      image = image_fixture()
+      assert %{lost_against: [], won_against: []} = Contestants.list_image_comparisons!(image.id);
+    end
   end
 end
