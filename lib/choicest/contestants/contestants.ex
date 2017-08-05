@@ -103,6 +103,41 @@ defmodule Choicest.Contestants do
     Image.changeset(image, %{})
   end
 
+  @doc """
+  Creates comparison between images
+
+  ## Examples
+
+      iex> create_comparison(%{winner_id: 123, loser_id: 124})
+      {:ok, %Comparison{}}
+
+      iex> create_comparison(%{winner_id: 456, loser_id: 457})
+      ** (Ecto.NoResultsError)
+
+  """
+  def create_comparison(%{winner_id: winner_id, loser_id: loser_id}) do
+    winner = Repo.get!(Image, winner_id)
+    loser = Repo.get!(Image, loser_id)
+
+    comparison = Ecto.build_assoc(winner, :wins)
+    comparison = Ecto.build_assoc(loser, :losses, Map.from_struct comparison)
+
+    Repo.insert(comparison)
+  end
+
+  @doc """
+  Gets single comparison by id
+
+  ## Examples
+
+      iex> get_comparison!(123)
+      {:ok, %Comparison{}}
+
+      iex> get_comparison!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_comparison!(id), do: Repo.get!(Comparison, id)
 
   @doc """
   Gets a list of comparisons on image.

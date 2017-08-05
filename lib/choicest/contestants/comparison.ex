@@ -18,6 +18,5 @@ defmodule Choicest.Contestants.Comparison do
   def changeset(%Comparison{} = comparison, attrs) do
     comparison
     |> cast(attrs, [:session_id])
-    |> validate_required([:session_id])
   end
 end

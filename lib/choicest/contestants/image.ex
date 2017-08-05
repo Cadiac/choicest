@@ -14,8 +14,8 @@ defmodule Choicest.Contestants.Image do
 
     timestamps()
 
-    has_many :wins, Comparison
-    has_many :losses, Comparison
+    has_many :wins, Comparison, foreign_key: :winner_id
+    has_many :losses, Comparison, foreign_key: :loser_id
   end
 
   @doc false
