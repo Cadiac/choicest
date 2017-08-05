@@ -15,6 +15,7 @@ defmodule ChoicestWeb.ComparisonController do
     with {:ok, %Comparison{} = comparison} <- Contestants.create_comparison(winner_id, loser_id) do
       conn
       |> put_status(:created)
+      |> put_resp_header("location", comparison_path(conn, :show, comparison))
       |> render("show.json", comparison: comparison)
     end
   end
