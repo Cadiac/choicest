@@ -27,7 +27,7 @@ defmodule ChoicestWeb.ComparisonControllerTest do
     setup [:create_image]
 
     test "lists empty comparisons correctly", %{conn: conn, image: image} do
-      conn = get conn, "/api/images/#{image.id}/comparisons"
+      conn = get conn, "/api/comparisons/results/#{image.id}"
       assert json_response(conn, 200)["won_against"] == []
       assert json_response(conn, 200)["lost_against"] == []
     end

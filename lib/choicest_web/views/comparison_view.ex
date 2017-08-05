@@ -3,7 +3,7 @@ defmodule ChoicestWeb.ComparisonView do
   alias ChoicestWeb.ComparisonView
   alias ChoicestWeb.ImageView
 
-  def render("index.json", %{comparisons: comparisons}) do
+  def render("index.json", %{comparison_results: comparisons}) do
     %{won_against: render_many(comparisons.won_against, ComparisonView, "wins.json"),
       lost_against: render_many(comparisons.lost_against, ComparisonView, "losses.json")}
   end

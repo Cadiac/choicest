@@ -24,7 +24,7 @@ defmodule Choicest.ContestantsTest do
       %Image{id: winner_id} = image_fixture()
       %Image{id: loser_id} = image_fixture()
 
-      {:ok, comparison} = Contestants.create_comparison(%{loser_id: loser_id, winner_id: winner_id})
+      {:ok, comparison} = Contestants.create_comparison(winner_id, loser_id)
 
       comparison
     end
@@ -84,8 +84,7 @@ defmodule Choicest.ContestantsTest do
       %Image{id: winner_id} = image_fixture()
       %Image{id: loser_id} = image_fixture()
 
-      comparison_attrs = %{winner_id: winner_id, loser_id: loser_id}
-      assert {:ok, %Comparison{} = comparison} = Contestants.create_comparison(comparison_attrs)
+      assert {:ok, %Comparison{} = comparison} = Contestants.create_comparison(winner_id, loser_id)
       assert comparison.winner_id == winner_id
       assert comparison.loser_id == loser_id
     end

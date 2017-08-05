@@ -23,8 +23,10 @@ defmodule ChoicestWeb.Router do
   scope "/api", ChoicestWeb do
     pipe_through :api
 
-    resources "/images", ImageController, except: [:new, :edit] do
-      resources "/comparisons", ComparisonController, except: [:new, :edit]
-    end
+    resources "/images", ImageController, except: [:new, :edit]
+
+    post "/comparisons/", ComparisonController, :create
+    get "/comparisons/:id", ComparisonController, :show
+    get "/comparisons/results/:image_id", ComparisonController, :results
   end
 end
