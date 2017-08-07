@@ -3,6 +3,7 @@ defmodule Choicest.Collections.Comparison do
   import Ecto.Changeset
   alias Choicest.Collections.Image
   alias Choicest.Collections.Comparison
+  alias Choicest.Collections.Collection
 
 
   schema "comparisons" do
@@ -12,6 +13,7 @@ defmodule Choicest.Collections.Comparison do
 
     belongs_to :winner, Image
     belongs_to :loser, Image
+    belongs_to :collection, Collection
   end
 
   @doc false
