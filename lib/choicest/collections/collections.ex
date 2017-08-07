@@ -1,13 +1,13 @@
-defmodule Choicest.Contestants do
+defmodule Choicest.Collections do
   @moduledoc """
-  The Contestants context.
+  The Collections context.
   """
 
   import Ecto.Query, warn: false
   alias Choicest.Repo
 
-  alias Choicest.Contestants.Image
-  alias Choicest.Contestants.Comparison
+  alias Choicest.Collections.Image
+  alias Choicest.Collections.Comparison
 
   @doc """
   Returns the list of images.

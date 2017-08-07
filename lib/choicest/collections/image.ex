@@ -1,8 +1,8 @@
-defmodule Choicest.Contestants.Image do
+defmodule Choicest.Collections.Image do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Choicest.Contestants.Image
-  alias Choicest.Contestants.Comparison
+  alias Choicest.Collections.Image
+  alias Choicest.Collections.Comparison
 
 
   schema "images" do

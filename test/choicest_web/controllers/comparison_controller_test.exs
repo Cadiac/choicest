@@ -1,14 +1,14 @@
 defmodule ChoicestWeb.ComparisonControllerTest do
   use ChoicestWeb.ConnCase
 
-  alias Choicest.Contestants
-  alias Choicest.Contestants.Image
+  alias Choicest.Collections
+  alias Choicest.Collections.Image
 
   @create_attrs %{content_type: "some content_type", description: "some description", file_size: 42, filename: "some filename", url: "some url"}
   @missing_image 99999999
 
   def fixture(:image) do
-    {:ok, image} = Contestants.create_image(@create_attrs)
+    {:ok, image} = Collections.create_image(@create_attrs)
     image
   end
 
@@ -16,7 +16,7 @@ defmodule ChoicestWeb.ComparisonControllerTest do
     %Image{id: winner_id} = fixture(:image)
     %Image{id: loser_id} = fixture(:image)
 
-    {:ok, comparison} = Contestants.create_comparison(winner_id, loser_id)
+    {:ok, comparison} = Collections.create_comparison(winner_id, loser_id)
 
     comparison
   end
