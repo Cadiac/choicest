@@ -4,13 +4,32 @@ defmodule ChoicestWeb.ImageControllerTest do
   alias Choicest.Collections
   alias Choicest.Collections.Image
 
-  @create_attrs %{content_type: "some content_type", description: "some description", file_size: 42, filename: "some filename", url: "some url"}
-  @update_attrs %{content_type: "some updated content_type", description: "some updated description", file_size: 43, filename: "some updated filename", url: "some updated url"}
-  @invalid_attrs %{content_type: nil, description: nil, file_size: nil, filename: nil, url: nil}
+  @image_create_attrs %{content_type: "some content_type", description: "some description", file_size: 42, filename: "some filename", url: "some url"}
+  @image_update_attrs %{content_type: "some updated content_type", description: "some updated description", file_size: 43, filename: "some updated filename", url: "some updated url"}
+  @image_invalid_attrs %{content_type: nil, description: nil, file_size: nil, filename: nil, url: nil}
 
-  def fixture(:image) do
-    {:ok, image} = Collections.create_image(@create_attrs)
+  @collection_create_attrs %{description: "some description", name: "some name", voting_active: true}
+
+  def fixture(:image, collection_id) do
+    {:ok, image} = Collections.create_image(@image_create_attrs)
     image
+  end
+
+  def fixture(:collection) do
+    {:ok, collection} = Collections.create_collection(@collection_create_attrs)
+    image
+  end
+
+  defp create_image(_) do
+    collection = fixture(:collection)
+    image = fixture(:image, collection.id)
+
+    {:ok, image: image}
+  end
+
+  defp create_collection(_) do
+    collection = fixture(:collection)
+    {:ok, collection: collection}
   end
 
   setup %{conn: conn} do
@@ -19,17 +38,19 @@ defmodule ChoicestWeb.ImageControllerTest do
 
   describe "index" do
     test "lists all images", %{conn: conn} do
-      conn = get conn, image_path(conn, :index)
+      conn = get conn, "/api/collections/#{collection_id}/images"
       assert json_response(conn, 200)["data"] == []
     end
   end
 
   describe "create image" do
-    test "renders image when data is valid", %{conn: conn} do
-      conn = post conn, image_path(conn, :create), image: @create_attrs
+    setup [:create_collection]
+
+    test "renders image when data is valid", %{conn: conn, collection: collection} do
+      conn = post conn, "/api/collections/#{collection.id}/images", image: @image_create_attrs
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get conn, image_path(conn, :show, id)
+      conn = get conn, "/api/collections/#{collection.id}/images"
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
         "content_type" => "some content_type",
@@ -39,20 +60,20 @@ defmodule ChoicestWeb.ImageControllerTest do
         "url" => "some url"}
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post conn, image_path(conn, :create), image: @invalid_attrs
+    test "renders errors when data is invalid", %{conn: conn, collection: collection} do
+      conn = post conn, "/api/collections/#{collection.id}/images", image: @image_invalid_attrs
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
 
   describe "update image" do
-    setup [:create_image]
+    setup [:create_image, :create_collection]
 
-    test "renders image when data is valid", %{conn: conn, image: %Image{id: id} = image} do
-      conn = put conn, image_path(conn, :update, image), image: @update_attrs
+    test "renders image when data is valid", %{conn: conn, image: %Image{id: id} = image, collection: collection} do
+      conn = put conn, "/api/collections/#{collection.id}/images/#{id}", image: @image_update_attrs
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get conn, image_path(conn, :show, id)
+      conn = get conn, "/api/collections/#{collection_id}/images/#{id}"
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
         "content_type" => "some updated content_type",
@@ -63,7 +84,7 @@ defmodule ChoicestWeb.ImageControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, image: image} do
-      conn = put conn, image_path(conn, :update, image), image: @invalid_attrs
+      conn = put conn, "/api/collections/#{collection_id}/images/#{image.id}", image: @image_invalid_attrs
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -72,10 +93,10 @@ defmodule ChoicestWeb.ImageControllerTest do
     setup [:create_image]
 
     test "deletes chosen image", %{conn: conn, image: image} do
-      conn = delete conn, image_path(conn, :delete, image)
+      conn = delete conn, "/api/collections/#{collection_id}/images/#{image.id}"
       assert response(conn, 204)
       assert_error_sent 404, fn ->
-        get conn, image_path(conn, :show, image)
+        get conn, "/api/collections/#{collection_id}/images/#{image.id}"
       end
     end
   end

@@ -46,7 +46,7 @@ defmodule ChoicestWeb.ComparisonControllerTest do
     setup [:create_winner_loser]
 
     test "creates comparison between images", %{conn: conn, winner_id: winner_id, loser_id: loser_id} do
-      conn = post conn, "/api/comparisons/", %{winner_id: winner_id, loser_id: loser_id}
+      conn = post conn, "/api/comparisons", %{winner_id: winner_id, loser_id: loser_id}
 
       assert %{"winner" => winner} = json_response(conn, 201)["data"]
       assert %{"loser" => loser} = json_response(conn, 201)["data"]
@@ -57,15 +57,15 @@ defmodule ChoicestWeb.ComparisonControllerTest do
 
     test "returns error if one or both of the images are missing", %{conn: conn, winner_id: winner_id, loser_id: loser_id} do
       assert_error_sent 404, fn ->
-        post conn, "/api/comparisons/", %{winner_id: winner_id, loser_id: @missing_image}
+        post conn, "/api/comparisons", %{winner_id: winner_id, loser_id: @missing_image}
       end
 
       assert_error_sent 404, fn ->
-        post conn, "/api/comparisons/", %{winner_id: @missing_image, loser_id: loser_id}
+        post conn, "/api/comparisons", %{winner_id: @missing_image, loser_id: loser_id}
       end
 
       assert_error_sent 404, fn ->
-        post conn, "/api/comparisons/", %{winner_id: @missing_image, loser_id: @missing_image}
+        post conn, "/api/comparisons", %{winner_id: @missing_image, loser_id: @missing_image}
       end
     end
   end
