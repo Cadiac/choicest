@@ -5,6 +5,7 @@ defmodule ChoicestWeb.ComparisonControllerTest do
   alias Choicest.Contestants.Image
 
   @create_attrs %{content_type: "some content_type", description: "some description", file_size: 42, filename: "some filename", url: "some url"}
+  @missing_image 99999999
 
   def fixture(:image) do
     {:ok, image} = Contestants.create_image(@create_attrs)
@@ -53,6 +54,20 @@ defmodule ChoicestWeb.ComparisonControllerTest do
       assert winner["id"] == winner_id
       assert loser["id"] == loser_id
     end
+
+    test "returns error if one or both of the images are missing", %{conn: conn, winner_id: winner_id, loser_id: loser_id} do
+      assert_error_sent 404, fn ->
+        post conn, "/api/comparisons/", %{winner_id: winner_id, loser_id: @missing_image}
+      end
+
+      assert_error_sent 404, fn ->
+        post conn, "/api/comparisons/", %{winner_id: @missing_image, loser_id: loser_id}
+      end
+
+      assert_error_sent 404, fn ->
+        post conn, "/api/comparisons/", %{winner_id: @missing_image, loser_id: @missing_image}
+      end
+    end
   end
 
   describe "get comparison by id" do
@@ -69,6 +84,12 @@ defmodule ChoicestWeb.ComparisonControllerTest do
       assert loser["id"] == comparison.loser_id
 
       assert id == comparison.id
+    end
+
+    test "returns error for missing image", %{conn: conn} do
+      assert_error_sent 404, fn ->
+        get conn, "/api/comparisons/99999999"
+      end
     end
   end
 
