@@ -6,6 +6,7 @@ defmodule Choicest.Collections do
   import Ecto.Query, warn: false
   alias Choicest.Repo
 
+  alias Choicest.Collections.Collection
   alias Choicest.Collections.Image
   alias Choicest.Collections.Comparison
 
@@ -14,44 +15,52 @@ defmodule Choicest.Collections do
 
   ## Examples
 
-      iex> list_images()
+      iex> list_images(collection_id)
       [%Image{}, ...]
 
   """
-  def list_images do
-    Repo.all(Image)
+  def list_images(collection_id) do
+    Repo.all(
+      from i in Image,
+      where: i.collection_id == ^collection_id,
+      select: i
+    )
   end
 
   @doc """
-  Gets a single image.
+  Gets a single image in collection.
 
   Raises `Ecto.NoResultsError` if the Image does not exist.
 
   ## Examples
 
-      iex> get_image!(123)
+      iex> get_image!(collection_id, image_id)
       %Image{}
 
-      iex> get_image!(456)
+      iex> get_image!(collection_id, bad_image_id)
       ** (Ecto.NoResultsError)
 
   """
-  def get_image!(id), do: Repo.get!(Image, id)
+  def get_image!(collection_id, image_id) do
+    Repo.get_by!(Image, %{id: image_id, collection_id: collection_id})
+  end
 
   @doc """
   Creates a image.
 
   ## Examples
 
-      iex> create_image(%{field: value})
+      iex> create_image(collection_id, %{field: value})
       {:ok, %Image{}}
 
-      iex> create_image(%{field: bad_value})
+      iex> create_image(collection_id, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_image(attrs \\ %{}) do
-    %Image{}
+  def create_image(collection_id, attrs \\ %{}) do
+    collection = get_collection!(collection_id)
+
+    Ecto.build_assoc(collection, :images)
     |> Image.changeset(attrs)
     |> Repo.insert()
   end
@@ -108,19 +117,22 @@ defmodule Choicest.Collections do
 
   ## Examples
 
-      iex> create_comparison(123, 124)
+      iex> create_comparison(collection_id, winner_id, loser_id)
       {:ok, %Comparison{}}
 
-      iex> create_comparison(456, 457)
+      iex> create_comparison(collection_id, bad_winner_id, bad_loser_id)
       ** (Ecto.NoResultsError)
 
   """
-  def create_comparison(winner_id, loser_id) do
-    winner = Repo.get!(Image, winner_id)
-    loser = Repo.get!(Image, loser_id)
+  def create_comparison(collection_id, winner_id, loser_id) do
+    collection = get_collection!(collection_id)
+
+    winner = get_image!(collection_id, winner_id)
+    loser = get_image!(collection_id, loser_id)
 
     comparison = Ecto.build_assoc(winner, :wins)
     comparison = Ecto.build_assoc(loser, :losses, Map.from_struct comparison)
+    comparison = Ecto.build_assoc(collection, :comparisons, Map.from_struct comparison)
 
     case Repo.insert(comparison) do
       {:ok, comparison} ->
@@ -133,15 +145,15 @@ defmodule Choicest.Collections do
 
   ## Examples
 
-      iex> get_comparison!(123)
+      iex> get_comparison!(collection_id, comparison_id)
       {:ok, %Comparison{}}
 
-      iex> get_comparison!(456)
+      iex> get_comparison!(collection_id, bad_comparison_id)
       ** (Ecto.NoResultsError)
 
   """
-  def get_comparison!(id) do
-    Repo.get!(Comparison, id)
+  def get_comparison!(collection_id, comparison_id) do
+    Repo.get_by!(Comparison, %{id: comparison_id, collection_id: collection_id})
     |> Repo.preload(:winner)
     |> Repo.preload(:loser)
   end
@@ -153,33 +165,33 @@ defmodule Choicest.Collections do
 
   ## Examples
 
-      iex> list_image_comparisons!(123)
+      iex> list_image_comparisons!(collection_id, image_id)
       %{lost_against: [%Comparison{}, ...], won_against: [%Comparison{}, ...]}
 
-      iex> list_image_comparisons!(456)
+      iex> list_image_comparisons!(collection_id, bad_image_id)
       %{lost_against: [], won_against: []}
 
   """
-  def list_image_comparisons!(id) do
+  def list_image_comparisons!(collection_id, image_id) do
     won_against = Repo.all(
       from c in Comparison,
         join: w in assoc(c, :winner),
-      where: w.id == ^id,
+      where: w.collection_id == ^collection_id,
+      where: w.id == ^image_id,
       select: c,
       preload: [:loser]
     )
     lost_against = Repo.all(
       from c in Comparison,
         join: l in assoc(c, :loser),
-      where: l.id == ^id,
+      where: l.collection_id == ^collection_id,
+      where: l.id == ^image_id,
       select: c,
       preload: [:winner]
     )
 
     %{won_against: won_against, lost_against: lost_against}
   end
-
-  alias Choicest.Collections.Collection
 
   @doc """
   Returns the list of collections.

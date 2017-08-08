@@ -4,8 +4,9 @@ defmodule ChoicestWeb.ComparisonControllerTest do
   alias Choicest.Collections
   alias Choicest.Collections.Image
 
-  @create_attrs %{content_type: "some content_type", description: "some description", file_size: 42, filename: "some filename", url: "some url"}
+  @image_create_attrs %{content_type: "some content_type", description: "some description", file_size: 42, filename: "some filename", url: "some url"}
   @missing_image 99999999
+  @collection_create_attrs %{description: "some description", name: "some name", voting_active: true}
 
   def fixture(:collection) do
     {:ok, collection} = Collections.create_collection(@collection_create_attrs)
@@ -18,8 +19,8 @@ defmodule ChoicestWeb.ComparisonControllerTest do
   end
 
   def fixture(:comparison, collection_id) do
-    %Image{id: winner_id} = fixture(:image)
-    %Image{id: loser_id} = fixture(:image)
+    %Image{id: winner_id} = fixture(:image, collection_id)
+    %Image{id: loser_id} = fixture(:image, collection_id)
 
     {:ok, comparison} = Collections.create_comparison(collection_id, winner_id, loser_id)
 

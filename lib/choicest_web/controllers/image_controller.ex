@@ -20,7 +20,7 @@ defmodule ChoicestWeb.ImageController do
     with {:ok, %Image{} = image} <- Collections.create_image(collection_id, image_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", "/api/images/#{image.id}")
+      |> put_resp_header("location", "/api/collections/${collection_id}/images/#{image.id}")
       |> render("show.json", image: image)
     end
   end
