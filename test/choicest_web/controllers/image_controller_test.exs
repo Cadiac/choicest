@@ -11,7 +11,7 @@ defmodule ChoicestWeb.ImageControllerTest do
   @collection_create_attrs %{description: "some description", name: "some name", voting_active: true}
 
   def fixture(:image, collection_id) do
-    {:ok, image} = Collections.create_image(@image_create_attrs)
+    {:ok, image} = Collections.create_image(collection_id, @image_create_attrs)
     image
   end
 
@@ -40,7 +40,7 @@ defmodule ChoicestWeb.ImageControllerTest do
       conn = post conn, "/api/collections/#{collection.id}/images", image: @image_create_attrs
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get conn, "/api/collections/#{collection.id}/images"
+      conn = get conn, "/api/collections/#{collection.id}/images/#{id}"
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
         "content_type" => "some content_type",
@@ -60,10 +60,10 @@ defmodule ChoicestWeb.ImageControllerTest do
     setup [:create_image]
 
     test "renders image when data is valid", %{conn: conn, image: %Image{id: id} = image, collection: collection} do
-      conn = put conn, "/api/collections/#{collection.id}/images/#{id}", image: @image_update_attrs
+      conn = put conn, "/api/collections/#{collection.id}/images/#{image.id}", image: @image_update_attrs
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get conn, "/api/collections/#{collection.id}/images/#{id}"
+      conn = get conn, "/api/collections/#{collection.id}/images/#{image.id}"
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
         "content_type" => "some updated content_type",

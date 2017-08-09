@@ -92,11 +92,6 @@ defmodule ChoicestWeb.ComparisonControllerTest do
     end
   end
 
-  defp create_collection(_) do
-    collection = fixture(:collection)
-    {:ok, collection: collection}
-  end
-
   defp create_image(_) do
     collection = fixture(:collection)
     image = fixture(:image, collection.id)

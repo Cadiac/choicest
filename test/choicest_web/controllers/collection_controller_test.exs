@@ -47,10 +47,10 @@ defmodule ChoicestWeb.CollectionControllerTest do
     setup [:create_collection]
 
     test "renders collection when data is valid", %{conn: conn, collection: %Collection{id: id} = collection} do
-      conn = put conn, "/api/collections/#{id}", collection: @update_attrs
+      conn = put conn, "/api/collections/#{collection.id}", collection: @update_attrs
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get conn, "/api/collections/#{id}"
+      conn = get conn, "/api/collections/#{collection.id}"
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
         "description" => "some updated description",
