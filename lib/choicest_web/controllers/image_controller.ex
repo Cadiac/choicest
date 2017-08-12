@@ -17,11 +17,13 @@ defmodule ChoicestWeb.ImageController do
   end
 
   def create(conn, %{"collection_id" => collection_id, "image" => image_params}) do
-    with {:ok, %Image{} = image} <- Collections.create_image(collection_id, image_params) do
+    with {:ok, %Image{} = image} <- Collections.create_image(collection_id, image_params),
+         {:ok, url} <- Collections.create_presigned_url(image.filename)
+    do
       conn
       |> put_status(:created)
       |> put_resp_header("location", "/api/collections/${collection_id}/images/#{image.id}")
-      |> render("show.json", image: image)
+      |> render("upload.json", %{image: image, url: url})
     end
   end
 

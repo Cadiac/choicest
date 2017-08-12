@@ -20,7 +20,7 @@ defmodule Choicest.Mixfile do
   def application do
     [
       mod: {Choicest.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :ex_aws]
     ]
   end
 

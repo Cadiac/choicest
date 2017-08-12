@@ -61,8 +61,16 @@ defmodule Choicest.Collections do
     collection = get_collection!(collection_id)
 
     Ecto.build_assoc(collection, :images)
-    |> Image.changeset(attrs)
+    |> Image.insert_changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Creates a presigned url for image upload.
+  """
+  def create_presigned_url(filename) do
+    ExAws.Config.new(:s3)
+    |> ExAws.S3.presigned_url(:put, System.get_env("AWS_S3_COLLECTION_BUCKET"), filename, [expires_in: 600])
   end
 
   @doc """

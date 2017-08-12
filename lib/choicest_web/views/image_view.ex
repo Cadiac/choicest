@@ -18,4 +18,8 @@ defmodule ChoicestWeb.ImageView do
       content_type: image.content_type,
       file_size: image.file_size}
   end
+
+  def render("upload.json", %{image: image, url: url}) do
+    %{data: render_one(image, ImageView, "image.json"), signedUrl: url}
+  end
 end
