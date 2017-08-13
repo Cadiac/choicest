@@ -5,13 +5,16 @@ defmodule Choicest.Collections.Image do
   alias Choicest.Collections.Comparison
   alias Choicest.Collections.Collection
 
+  alias Choicest.Utils
 
   schema "images" do
-    field :content_type, :string
     field :description, :string
-    field :file_size, :integer
-    field :filename, :string
     field :url, :string
+    field :filename, :string
+    field :original_filename, :string
+    field :content_type, :string
+    field :file_size, :integer
+    field :uploaded_by, :string
 
     timestamps()
 
@@ -23,17 +26,25 @@ defmodule Choicest.Collections.Image do
   @doc false
   def changeset(%Image{} = image, attrs) do
     image
-    |> cast(attrs, [:url, :filename, :description, :content_type, :file_size])
-    |> validate_required([:filename, :description, :content_type, :file_size])
+    |> cast(attrs, [:description, :url, :filename, :original_filename, :content_type, :file_size, :uploaded_by])
   end
 
   def insert_changeset(%Image{} = image, attrs) do
     region = System.get_env("AWS_REGION")
     bucket = System.get_env("AWS_S3_COLLECTION_BUCKET")
-    filename = attrs["filename"]
+    filename = Utils.random_string(16)
 
     image
     |> changeset(attrs)
-    |> put_change(:url, "https://s3-#{region}.amazonaws.com/#{bucket}/#{filename}")
+    |> validate_required([:original_filename, :content_type, :file_size, :uploaded_by])
+    |> validate_inclusion(:content_type, ["image/jpeg", "image/png", "image/gif"])
+    |> put_change(:filename, filename)
+    |> put_change(:url, "https://s3-#{region}.amazonaws.com/#{bucket}/#{image.collection_id}/#{filename}")
+  end
+
+  def update_changeset(%Image{} = image, attrs) do
+    image
+    |> cast(attrs, [:description])
+    |> validate_required([:description])
   end
 end

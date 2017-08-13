@@ -18,7 +18,7 @@ defmodule ChoicestWeb.ImageController do
 
   def create(conn, %{"collection_id" => collection_id, "image" => image_params}) do
     with {:ok, %Image{} = image} <- Collections.create_image(collection_id, image_params),
-         {:ok, url} <- Collections.create_presigned_url(image.filename)
+         {:ok, url} <- Collections.create_presigned_url(collection_id, image.filename)
     do
       conn
       |> put_status(:created)

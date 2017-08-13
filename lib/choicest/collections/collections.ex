@@ -68,9 +68,12 @@ defmodule Choicest.Collections do
   @doc """
   Creates a presigned url for image upload.
   """
-  def create_presigned_url(filename) do
+  def create_presigned_url(collection_id, filename) do
     ExAws.Config.new(:s3)
-    |> ExAws.S3.presigned_url(:put, System.get_env("AWS_S3_COLLECTION_BUCKET"), filename, [expires_in: 600])
+    |> ExAws.S3.presigned_url(:put,
+                              System.get_env("AWS_S3_COLLECTION_BUCKET"),
+                              "#{collection_id}/#{filename}",
+                              [ expires_in: 600, query_params: %{"Content-Type": "image/jpeg", "Content-Length": 91234} ])
   end
 
   @doc """
@@ -87,7 +90,7 @@ defmodule Choicest.Collections do
   """
   def update_image(%Image{} = image, attrs) do
     image
-    |> Image.changeset(attrs)
+    |> Image.update_changeset(attrs)
     |> Repo.update()
   end
 
