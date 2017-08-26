@@ -32,9 +32,9 @@ defmodule ChoicestWeb.CollectionControllerTest do
       conn = get conn, "/api/collections/#{id}"
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
-        "description" => "some description",
-        "name" => "some name",
-        "voting_active" => true}
+        "description" => @create_attrs.description,
+        "name" => @create_attrs.name,
+        "voting_active" => @create_attrs.voting_active}
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -53,9 +53,9 @@ defmodule ChoicestWeb.CollectionControllerTest do
       conn = get conn, "/api/collections/#{collection.id}"
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
-        "description" => "some updated description",
-        "name" => "some updated name",
-        "voting_active" => false}
+        "description" => @update_attrs.description,
+        "name" => @update_attrs.name,
+        "voting_active" => @update_attrs.voting_active}
     end
 
     test "renders errors when data is invalid", %{conn: conn, collection: %Collection{id: id}} do

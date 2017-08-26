@@ -31,9 +31,9 @@ defmodule Choicest.CollectionsTest do
 
     test "create_collection/1 with valid data creates a collection" do
       assert {:ok, %Collection{} = collection} = Collections.create_collection(@valid_attrs)
-      assert collection.description == "some description"
-      assert collection.name == "some name"
-      assert collection.voting_active == true
+      assert collection.description == @valid_attrs.description
+      assert collection.name == @valid_attrs.name
+      assert collection.voting_active == @valid_attrs.voting_active
     end
 
     test "create_collection/1 with invalid data returns error changeset" do
@@ -44,9 +44,9 @@ defmodule Choicest.CollectionsTest do
       collection = collection_fixture()
       assert {:ok, collection} = Collections.update_collection(collection, @update_attrs)
       assert %Collection{} = collection
-      assert collection.description == "some updated description"
-      assert collection.name == "some updated name"
-      assert collection.voting_active == false
+      assert collection.description == @update_attrs.description
+      assert collection.name == @update_attrs.name
+      assert collection.voting_active == @update_attrs.voting_active
     end
 
     test "update_collection/2 with invalid data returns error changeset" do

@@ -4,7 +4,7 @@ defmodule ChoicestWeb.ComparisonControllerTest do
   alias Choicest.Collections
   alias Choicest.Collections.Image
 
-  @image_create_attrs %{content_type: "some content_type", description: "some description", file_size: 42, filename: "some filename", url: "some url"}
+  @image_create_attrs %{description: "some description", original_filename: "some original_filename", content_type: "image/jpeg", file_size: 42, uploaded_by: "uploaded_by"}
   @missing_image 99999999
   @collection_create_attrs %{description: "some description", name: "some name", voting_active: true}
 

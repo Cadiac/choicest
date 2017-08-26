@@ -14,9 +14,11 @@ defmodule ChoicestWeb.ImageView do
     %{id: image.id,
       url: image.url,
       filename: image.filename,
+      original_filename: image.original_filename,
       description: image.description,
       content_type: image.content_type,
-      file_size: image.file_size}
+      file_size: image.file_size,
+      uploaded_by: image.uploaded_by}
   end
 
   def render("upload.json", %{image: image, url: url}) do

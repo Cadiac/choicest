@@ -7,9 +7,9 @@ defmodule Choicest.ImageTest do
     alias Choicest.Collections.Image
     alias Choicest.Collections.Collection
 
-    @valid_image_attrs %{content_type: "some content_type", description: "some description", file_size: 42, filename: "some filename", url: "some url"}
-    @update_image_attrs %{content_type: "some updated content_type", description: "some updated description", file_size: 43, filename: "some updated filename", url: "some updated url"}
-    @invalid_image_attrs %{content_type: nil, description: nil, file_size: nil, filename: nil, url: nil}
+    @valid_image_attrs %{description: "some description", original_filename: "some original_filename", content_type: "image/jpeg", file_size: 42, uploaded_by: "uploaded_by"}
+    @update_image_attrs %{description: "some updated description"}
+    @invalid_image_attrs %{description: nil, original_filename: nil, content_type: nil, file_size: nil, uploaded_by: nil}
 
     @valid_collection_attrs %{description: "some description", name: "some name", voting_active: true}
 
@@ -48,11 +48,16 @@ defmodule Choicest.ImageTest do
       %Collection{id: collection_id} = collection_fixture()
 
       assert {:ok, %Image{} = image} = Collections.create_image(collection_id, @valid_image_attrs)
-      assert image.content_type == "some content_type"
-      assert image.description == "some description"
-      assert image.file_size == 42
-      assert image.filename == "some filename"
-      assert image.url == "some url"
+      assert image.content_type == @valid_image_attrs.content_type
+      assert image.description == @valid_image_attrs.description
+      assert image.original_filename == @valid_image_attrs.original_filename
+      assert image.file_size == @valid_image_attrs.file_size
+      assert image.uploaded_by == @valid_image_attrs.uploaded_by
+
+      region = System.get_env("AWS_REGION")
+      bucket = System.get_env("AWS_S3_COLLECTION_BUCKET")
+
+      assert "https://s3-#{region}.amazonaws.com/#{bucket}/#{collection_id}/#{image.filename}" == image.url
     end
 
     test "create_image/1 with invalid data returns error changeset" do
@@ -67,12 +72,7 @@ defmodule Choicest.ImageTest do
       image = image_fixture(collection_id)
       assert {:ok, image} = Collections.update_image(image, @update_image_attrs)
       assert %Image{} = image
-      assert image.content_type == "some updated content_type"
-      assert image.description == "some updated description"
-      assert image.file_size == 43
-      assert image.filename == "some updated filename"
-      assert image.url == "some updated url"
-      assert image.collection_id == collection_id
+      assert image.description == @update_image_attrs.description
     end
 
     test "update_image/2 with invalid data returns error changeset" do
