@@ -247,7 +247,7 @@ defmodule Choicest.Collections do
   """
   def create_collection(attrs \\ %{}) do
     %Collection{}
-    |> Collection.insert_changeset(attrs)
+    |> Collection.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -265,7 +265,7 @@ defmodule Choicest.Collections do
   """
   def update_collection(%Collection{} = collection, attrs) do
     collection
-    |> Collection.update_changeset(attrs)
+    |> Collection.changeset(attrs)
     |> Repo.update()
   end
 

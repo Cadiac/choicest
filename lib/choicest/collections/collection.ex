@@ -1,15 +1,19 @@
+defmodule Choicest.Collections.Collection.CollectionSlug do
+  use EctoAutoslugField.Slug, from: :name, to: :slug
+end
+
 defmodule Choicest.Collections.Collection do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Choicest.Collections.Collection
   alias Choicest.Collections.Image
   alias Choicest.Collections.Comparison
-
+  alias Choicest.Collections.Collection
+  alias Choicest.Collections.Collection.CollectionSlug
 
   schema "collections" do
     field :description, :string
     field :name, :string
-    field :slug, :string
+    field :slug, CollectionSlug.Type
     field :voting_active, :boolean, default: false
 
     timestamps()
@@ -21,22 +25,10 @@ defmodule Choicest.Collections.Collection do
   @doc false
   def changeset(%Collection{} = collection, attrs) do
     collection
-    |> cast(attrs, [:name, :description, :voting_active, :slug])
-    |> validate_required([:name, :voting_active, :slug])
-    |> unique_constraint(:slug)
-  end
-
-  def insert_changeset(%Collection{} = collection, attrs) do
-    optional_params = %{"slug" => Choicest.Utils.random_string(16)}
-
-    attrs = Map.merge(optional_params, attrs)
-
-    collection
-    |> changeset(attrs)
-  end
-
-  def update_changeset(%Collection{} = collection, attrs) do
-    collection
-    |> changeset(attrs)
+    |> cast(attrs, [:name, :description, :voting_active])
+    |> validate_required([:name, :voting_active])
+    |> unique_constraint(:name)
+    |> CollectionSlug.maybe_generate_slug
+    |> CollectionSlug.unique_constraint
   end
 end
