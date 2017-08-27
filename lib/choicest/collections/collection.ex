@@ -9,6 +9,7 @@ defmodule Choicest.Collections.Collection do
   schema "collections" do
     field :description, :string
     field :name, :string
+    field :slug, :string
     field :voting_active, :boolean, default: false
 
     timestamps()
@@ -20,7 +21,22 @@ defmodule Choicest.Collections.Collection do
   @doc false
   def changeset(%Collection{} = collection, attrs) do
     collection
-    |> cast(attrs, [:name, :description, :voting_active])
-    |> validate_required([:name, :description, :voting_active])
+    |> cast(attrs, [:name, :description, :voting_active, :slug])
+    |> validate_required([:name, :voting_active, :slug])
+    |> unique_constraint(:slug)
+  end
+
+  def insert_changeset(%Collection{} = collection, attrs) do
+    optional_params = %{"slug" => Choicest.Utils.random_string(16)}
+
+    attrs = Map.merge(optional_params, attrs)
+
+    collection
+    |> changeset(attrs)
+  end
+
+  def update_changeset(%Collection{} = collection, attrs) do
+    collection
+    |> changeset(attrs)
   end
 end

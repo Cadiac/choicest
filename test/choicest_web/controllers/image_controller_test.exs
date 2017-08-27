@@ -8,7 +8,7 @@ defmodule ChoicestWeb.ImageControllerTest do
   @image_update_attrs %{description: "some updated description"}
   @image_invalid_attrs %{description: nil, original_filename: nil, content_type: nil, file_size: nil, uploaded_by: nil}
 
-  @collection_create_attrs %{description: "some description", name: "some name", voting_active: true}
+  @collection_create_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}
 
   def fixture(:image, collection_id) do
     {:ok, image} = Collections.create_image(collection_id, @image_create_attrs)

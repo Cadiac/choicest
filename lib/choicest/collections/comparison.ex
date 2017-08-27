@@ -20,5 +20,8 @@ defmodule Choicest.Collections.Comparison do
   def changeset(%Comparison{} = comparison, attrs) do
     comparison
     |> cast(attrs, [:session_id])
+    |> foreign_key_constraint(:winner_id)
+    |> foreign_key_constraint(:loser_id)
+    |> foreign_key_constraint(:collection_id)
   end
 end

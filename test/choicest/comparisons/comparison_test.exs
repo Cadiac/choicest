@@ -9,7 +9,7 @@ defmodule Choicest.ComparisonsTest do
     alias Choicest.Collections.Collection
 
     @valid_image_attrs %{description: "some description", original_filename: "some original_filename", content_type: "image/jpeg", file_size: 42, uploaded_by: "uploaded_by"}
-    @valid_collection_attrs %{description: "some description", name: "some name", voting_active: true}
+    @valid_collection_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}
 
     def collection_fixture(attrs \\ %{}) do
       {:ok, collection} =

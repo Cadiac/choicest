@@ -12,6 +12,7 @@ defmodule ChoicestWeb.CollectionView do
 
   def render("collection.json", %{collection: collection}) do
     %{id: collection.id,
+      slug: collection.slug,
       name: collection.name,
       description: collection.description,
       voting_active: collection.voting_active}

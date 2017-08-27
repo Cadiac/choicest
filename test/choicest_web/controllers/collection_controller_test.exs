@@ -4,9 +4,9 @@ defmodule ChoicestWeb.CollectionControllerTest do
   alias Choicest.Collections
   alias Choicest.Collections.Collection
 
-  @create_attrs %{description: "some description", name: "some name", voting_active: true}
-  @update_attrs %{description: "some updated description", name: "some updated name", voting_active: false}
-  @invalid_attrs %{description: nil, name: nil, voting_active: nil}
+  @create_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}
+  @update_attrs %{"description" => "some updated description", "name" => "some updated name", "voting_active" => false, "slug" => "NewUpdatedSlug"}
+  @invalid_attrs %{"description" => nil, "name" => nil, "voting_active" => nil, "slug" => nil}
 
   def fixture(:collection) do
     {:ok, collection} = Collections.create_collection(@create_attrs)
@@ -30,11 +30,17 @@ defmodule ChoicestWeb.CollectionControllerTest do
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get conn, "/api/collections/#{id}"
-      assert json_response(conn, 200)["data"] == %{
-        "id" => id,
-        "description" => @create_attrs.description,
-        "name" => @create_attrs.name,
-        "voting_active" => @create_attrs.voting_active}
+      assert %{
+        "id" => _id,
+        "description" => description,
+        "name" => name,
+        "voting_active" => voting_active,
+        "slug" => slug} = json_response(conn, 200)["data"]
+
+      assert description == @create_attrs["description"]
+      assert name == @create_attrs["name"]
+      assert voting_active == @create_attrs["voting_active"]
+      assert String.length(slug) > 0
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -51,11 +57,17 @@ defmodule ChoicestWeb.CollectionControllerTest do
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get conn, "/api/collections/#{collection.id}"
-      assert json_response(conn, 200)["data"] == %{
-        "id" => id,
-        "description" => @update_attrs.description,
-        "name" => @update_attrs.name,
-        "voting_active" => @update_attrs.voting_active}
+      assert %{
+        "id" => _id,
+        "description" => description,
+        "name" => name,
+        "voting_active" => voting_active,
+        "slug" => slug} = json_response(conn, 200)["data"]
+
+      assert description == @update_attrs["description"]
+      assert name == @update_attrs["name"]
+      assert voting_active == @update_attrs["voting_active"]
+      assert slug == @update_attrs["slug"]
     end
 
     test "renders errors when data is invalid", %{conn: conn, collection: %Collection{id: id}} do

@@ -11,7 +11,7 @@ defmodule Choicest.ImageTest do
     @update_image_attrs %{description: "some updated description"}
     @invalid_image_attrs %{description: nil, original_filename: nil, content_type: nil, file_size: nil, uploaded_by: nil}
 
-    @valid_collection_attrs %{description: "some description", name: "some name", voting_active: true}
+    @valid_collection_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}
 
     def collection_fixture(attrs \\ %{}) do
       {:ok, collection} =
