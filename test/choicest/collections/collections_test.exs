@@ -29,6 +29,11 @@ defmodule Choicest.CollectionsTest do
       assert Collections.get_collection!(collection.id) == collection
     end
 
+    test "get_collection_by_slug!/1 returns the collection with given slug" do
+      collection = collection_fixture()
+      assert Collections.get_collection_by_slug!(collection.slug) == collection
+    end
+
     test "create_collection/1 with valid data creates a collection" do
       assert {:ok, %Collection{} = collection} = Collections.create_collection(@valid_attrs)
       assert collection.description == @valid_attrs["description"]
