@@ -27,6 +27,7 @@ defmodule Choicest.Collections.Collection do
     collection
     |> cast(attrs, [:name, :description, :voting_active])
     |> validate_required([:name, :voting_active])
+    |> validate_length(:name, min: 1, max: 30)
     |> unique_constraint(:name)
     |> CollectionSlug.maybe_generate_slug
     |> CollectionSlug.unique_constraint

@@ -234,6 +234,27 @@ defmodule Choicest.Collections do
   def get_collection!(id), do: Repo.get!(Collection, id)
 
   @doc """
+  Gets a single collection by slug.
+
+  Raises `Ecto.NoResultsError` if the Collection does not exist.
+
+  ## Examples
+
+      iex> get_collection_by_slug!("foo-bar-baz")
+      %Collection{}
+
+      iex> get_collection_by_slug!("bar-foo")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_collection_by_slug!(slug) do
+    Repo.one!(
+      from c in Collection,
+      where: c.slug == ^slug
+    )
+  end
+
+  @doc """
   Creates a collection.
 
   ## Examples

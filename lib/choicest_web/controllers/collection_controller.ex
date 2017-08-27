@@ -16,6 +16,11 @@ defmodule ChoicestWeb.CollectionController do
     render(conn, "show.json", collection: collection)
   end
 
+  def get_by_slug(conn, %{"slug" => slug}) do
+    collection = Collections.get_collection_by_slug!(slug)
+    render(conn, "show.json", collection: collection)
+  end
+
   def create(conn, %{"collection" => collection_params}) do
     with {:ok, %Collection{} = collection} <- Collections.create_collection(collection_params) do
       conn
