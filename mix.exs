@@ -42,7 +42,8 @@ defmodule Choicest.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:ex_aws, "~> 1.1.3"},
-      {:ecto_autoslug_field, "~> 0.3"}
+      {:ecto_autoslug_field, "~> 0.3"},
+      {:guardian, "~> 0.14"}
     ]
   end
 

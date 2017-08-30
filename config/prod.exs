@@ -30,6 +30,9 @@ config :choicest, Choicest.Repo,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :guardian, Guardian,
+  secret_key: Map.fetch!(System.get_env(), "GUARDIAN_SECRET_KEY")
+
 # ## Using releases
 #
 # If you are doing OTP releases, you need to instruct Phoenix
