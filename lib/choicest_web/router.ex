@@ -26,7 +26,7 @@ defmodule ChoicestWeb.Router do
     get "/", PageController, :index
   end
 
-  # Non-authenticated.
+  # Public routes
   scope "/api", ChoicestWeb do
     pipe_through :api
 
@@ -41,7 +41,7 @@ defmodule ChoicestWeb.Router do
     get "/collections/by_slug/:slug", CollectionController, :get_by_slug
   end
 
-  # Authenticated
+  # Authenticated routes
   scope "/api", ChoicestWeb do
     pipe_through :auth
 

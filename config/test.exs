@@ -17,3 +17,8 @@ config :choicest, Choicest.Repo,
   database: "choicest_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+# Reduce password hashing rounds for faster tests
+config :argon2_elixir,
+  t_cost: 2,
+  m_cost: 12
