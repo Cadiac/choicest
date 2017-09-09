@@ -15,7 +15,7 @@ defmodule ChoicestWeb.Router do
 
   pipeline :auth do
     plug :accepts, ["json"]
-    plug Guardian.Plug.VerifyHeader
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
     plug Guardian.Plug.LoadResource
     plug Guardian.Plug.EnsureResource
   end
@@ -29,6 +29,8 @@ defmodule ChoicestWeb.Router do
   # Public routes
   scope "/api", ChoicestWeb do
     pipe_through :api
+
+    post "/login", SessionController, :create
 
     resources "/collections", CollectionController, only: [:index, :show, :create] do
       resources "/images", ImageController, only: [:index, :show]

@@ -10,6 +10,8 @@ defmodule Choicest.Collections do
   alias Choicest.Collections.Image
   alias Choicest.Collections.Comparison
 
+  import Comeonin.Argon2, only: [checkpw: 2, dummy_checkpw: 0]
+
   @doc """
   Returns the list of images.
 
@@ -318,4 +320,41 @@ defmodule Choicest.Collections do
   def change_collection(%Collection{} = collection) do
     Collection.changeset(collection, %{})
   end
+
+  @doc """
+  Checks if password matches collection with password.
+
+  ## Examples
+
+      iex> verify_collection_credentials(123, "hunter2")
+      {:ok, %Collection{}}
+
+      iex> verify_collection_credentials(666, "hunter2")
+      {:error, reason}
+
+  """
+  def verify_collection_credentials(id, password) when is_number(id) and is_binary(password) do
+    with {:ok, collection} <- find_collection_by_id(id),
+      do: verify_password(password, collection)
+  end
+
+  defp find_collection_by_id(id) when is_number(id) do
+    case Repo.get(Collection, id) do
+      nil ->
+        dummy_checkpw()
+        {:error, "Collection '#{id}' not found"}
+      collection ->
+        {:ok, collection}
+    end
+  end
+
+
+  defp verify_password(password, %Collection{} = collection) when is_binary(password) do
+    if checkpw(password, collection.password_hash) do
+      {:ok, collection}
+    else
+      {:error, :invalid_password}
+    end
+  end
+
 end
