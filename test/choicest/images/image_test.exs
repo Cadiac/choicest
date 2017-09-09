@@ -1,11 +1,11 @@
 defmodule Choicest.ImageTest do
   use Choicest.DataCase
 
-  alias Choicest.Collections
+  alias Choicest.Core
 
   describe "images" do
-    alias Choicest.Collections.Image
-    alias Choicest.Collections.Collection
+    alias Choicest.Core.Image
+    alias Choicest.Core.Collection
 
     @valid_image_attrs %{description: "some description", original_filename: "some original_filename", content_type: "image/jpeg", file_size: 42, uploaded_by: "uploaded_by"}
     @update_image_attrs %{description: "some updated description"}
@@ -17,7 +17,7 @@ defmodule Choicest.ImageTest do
       {:ok, collection} =
         attrs
         |> Enum.into(@valid_collection_attrs)
-        |> Collections.create_collection()
+        |> Core.create_collection()
 
       collection
     end
@@ -25,7 +25,7 @@ defmodule Choicest.ImageTest do
     def image_fixture(collection_id, attrs \\ %{}) do
       attrs = attrs |> Enum.into(@valid_image_attrs)
 
-      {:ok, image} = Collections.create_image(collection_id, attrs)
+      {:ok, image} = Core.create_image(collection_id, attrs)
 
       image
     end
@@ -34,20 +34,20 @@ defmodule Choicest.ImageTest do
       %Collection{id: collection_id} = collection_fixture()
 
       image = image_fixture(collection_id)
-      assert Collections.list_images(collection_id) == [image]
+      assert Core.list_images(collection_id) == [image]
     end
 
     test "get_image!/2 returns the image with given id" do
       %Collection{id: collection_id} = collection_fixture()
 
       image = image_fixture(collection_id)
-      assert Collections.get_image!(collection_id, image.id) == image
+      assert Core.get_image!(collection_id, image.id) == image
     end
 
     test "create_image/2 with valid data creates a image" do
       %Collection{id: collection_id} = collection_fixture()
 
-      assert {:ok, %Image{} = image} = Collections.create_image(collection_id, @valid_image_attrs)
+      assert {:ok, %Image{} = image} = Core.create_image(collection_id, @valid_image_attrs)
       assert image.content_type == @valid_image_attrs.content_type
       assert image.description == @valid_image_attrs.description
       assert image.original_filename == @valid_image_attrs.original_filename
@@ -63,14 +63,14 @@ defmodule Choicest.ImageTest do
     test "create_image/1 with invalid data returns error changeset" do
       %Collection{id: collection_id} = collection_fixture()
 
-      assert {:error, %Ecto.Changeset{}} = Collections.create_image(collection_id, @invalid_image_attrs)
+      assert {:error, %Ecto.Changeset{}} = Core.create_image(collection_id, @invalid_image_attrs)
     end
 
     test "update_image/2 with valid data updates the image" do
       %Collection{id: collection_id} = collection_fixture()
 
       image = image_fixture(collection_id)
-      assert {:ok, image} = Collections.update_image(image, @update_image_attrs)
+      assert {:ok, image} = Core.update_image(image, @update_image_attrs)
       assert %Image{} = image
       assert image.description == @update_image_attrs.description
     end
@@ -79,23 +79,23 @@ defmodule Choicest.ImageTest do
       %Collection{id: collection_id} = collection_fixture()
 
       image = image_fixture(collection_id)
-      assert {:error, %Ecto.Changeset{}} = Collections.update_image(image, @invalid_image_attrs)
-      assert image == Collections.get_image!(collection_id, image.id)
+      assert {:error, %Ecto.Changeset{}} = Core.update_image(image, @invalid_image_attrs)
+      assert image == Core.get_image!(collection_id, image.id)
     end
 
     test "delete_image/1 deletes the image" do
       %Collection{id: collection_id} = collection_fixture()
 
       image = image_fixture(collection_id)
-      assert {:ok, %Image{}} = Collections.delete_image(image)
-      assert_raise Ecto.NoResultsError, fn -> Collections.get_image!(collection_id, image.id) end
+      assert {:ok, %Image{}} = Core.delete_image(image)
+      assert_raise Ecto.NoResultsError, fn -> Core.get_image!(collection_id, image.id) end
     end
 
     test "change_image/1 returns a image changeset" do
       %Collection{id: collection_id} = collection_fixture()
 
       image = image_fixture(collection_id)
-      assert %Ecto.Changeset{} = Collections.change_image(image)
+      assert %Ecto.Changeset{} = Core.change_image(image)
     end
   end
 end

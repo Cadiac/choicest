@@ -1,14 +1,14 @@
-defmodule Choicest.Collections.Collection.CollectionSlug do
+defmodule Choicest.Core.Collection.CollectionSlug do
   use EctoAutoslugField.Slug, from: :name, to: :slug, always_change: true
 end
 
-defmodule Choicest.Collections.Collection do
+defmodule Choicest.Core.Collection do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Choicest.Collections.Image
-  alias Choicest.Collections.Comparison
-  alias Choicest.Collections.Collection
-  alias Choicest.Collections.Collection.CollectionSlug
+  alias Choicest.Core.Image
+  alias Choicest.Core.Comparison
+  alias Choicest.Core.Collection
+  alias Choicest.Core.Collection.CollectionSlug
 
   alias Comeonin.Argon2
   alias Choicest.Utils

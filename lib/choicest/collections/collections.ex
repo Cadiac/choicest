@@ -1,4 +1,4 @@
-defmodule Choicest.Collections do
+defmodule Choicest.Core do
   @moduledoc """
   The Collections context.
   """
@@ -6,9 +6,9 @@ defmodule Choicest.Collections do
   import Ecto.Query, warn: false
   alias Choicest.Repo
 
-  alias Choicest.Collections.Collection
-  alias Choicest.Collections.Image
-  alias Choicest.Collections.Comparison
+  alias Choicest.Core.Collection
+  alias Choicest.Core.Image
+  alias Choicest.Core.Comparison
 
   import Comeonin.Argon2, only: [checkpw: 2, dummy_checkpw: 0]
 

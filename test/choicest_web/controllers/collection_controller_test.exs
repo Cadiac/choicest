@@ -1,8 +1,8 @@
 defmodule ChoicestWeb.CollectionControllerTest do
   use ChoicestWeb.ConnCase
 
-  alias Choicest.Collections
-  alias Choicest.Collections.Collection
+  alias Choicest.Core
+  alias Choicest.Core.Collection
 
   @create_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}
   @update_attrs %{"description" => "some updated description", "name" => "some updated name", "voting_active" => false}
@@ -10,7 +10,7 @@ defmodule ChoicestWeb.CollectionControllerTest do
   @too_long_name_attrs %{"description" => "some description", "name" => "some way too long name that is over the character limit", "voting_active" => true}
 
   def fixture(:collection) do
-    {:ok, collection} = Collections.create_collection(@create_attrs)
+    {:ok, collection} = Core.create_collection(@create_attrs)
     collection
   end
 

@@ -1,12 +1,12 @@
 defmodule Choicest.ComparisonsTest do
   use Choicest.DataCase
 
-  alias Choicest.Collections
+  alias Choicest.Core
 
   describe "comparisons" do
-    alias Choicest.Collections.Image
-    alias Choicest.Collections.Comparison
-    alias Choicest.Collections.Collection
+    alias Choicest.Core.Image
+    alias Choicest.Core.Comparison
+    alias Choicest.Core.Collection
 
     @valid_image_attrs %{description: "some description", original_filename: "some original_filename", content_type: "image/jpeg", file_size: 42, uploaded_by: "uploaded_by"}
     @valid_collection_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}
@@ -15,7 +15,7 @@ defmodule Choicest.ComparisonsTest do
       {:ok, collection} =
         attrs
         |> Enum.into(@valid_collection_attrs)
-        |> Collections.create_collection()
+        |> Core.create_collection()
 
       collection
     end
@@ -23,7 +23,7 @@ defmodule Choicest.ComparisonsTest do
     def image_fixture(collection_id, attrs \\ %{}) do
       attrs = attrs |> Enum.into(@valid_image_attrs)
 
-      {:ok, image} = Collections.create_image(collection_id, attrs)
+      {:ok, image} = Core.create_image(collection_id, attrs)
 
       image
     end
@@ -32,7 +32,7 @@ defmodule Choicest.ComparisonsTest do
       %Image{id: winner_id} = image_fixture(collection_id)
       %Image{id: loser_id} = image_fixture(collection_id)
 
-      {:ok, comparison} = Collections.create_comparison(collection_id, winner_id, loser_id)
+      {:ok, comparison} = Core.create_comparison(collection_id, winner_id, loser_id)
 
       comparison
     end
@@ -43,7 +43,7 @@ defmodule Choicest.ComparisonsTest do
       %Image{id: winner_id} = image_fixture(collection_id)
       %Image{id: loser_id} = image_fixture(collection_id)
 
-      assert {:ok, %Comparison{} = comparison} = Collections.create_comparison(collection_id, winner_id, loser_id)
+      assert {:ok, %Comparison{} = comparison} = Core.create_comparison(collection_id, winner_id, loser_id)
       assert comparison.winner_id == winner_id
       assert comparison.loser_id == loser_id
     end
@@ -52,14 +52,14 @@ defmodule Choicest.ComparisonsTest do
       %Collection{id: collection_id} = collection_fixture()
 
       comparison = comparison_fixture(collection_id)
-      assert Collections.get_comparison!(collection_id, comparison.id) == comparison
+      assert Core.get_comparison!(collection_id, comparison.id) == comparison
     end
 
     test "list_image_comparisons returns empty comparisons for image with no comparisons" do
       %Collection{id: collection_id} = collection_fixture()
 
       image = image_fixture(collection_id)
-      assert %{lost_against: [], won_against: []} = Collections.list_image_comparisons!(collection_id, image.id);
+      assert %{lost_against: [], won_against: []} = Core.list_image_comparisons!(collection_id, image.id);
     end
   end
 end

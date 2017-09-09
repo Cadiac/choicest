@@ -1,8 +1,8 @@
 defmodule ChoicestWeb.ImageControllerTest do
   use ChoicestWeb.ConnCase
 
-  alias Choicest.Collections
-  alias Choicest.Collections.Image
+  alias Choicest.Core
+  alias Choicest.Core.Image
 
   @image_create_attrs %{description: "some description", original_filename: "some original_filename", content_type: "image/jpeg", file_size: 42, uploaded_by: "uploaded_by"}
   @image_update_attrs %{description: "some updated description"}
@@ -11,12 +11,12 @@ defmodule ChoicestWeb.ImageControllerTest do
   @collection_create_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}
 
   def fixture(:image, collection_id) do
-    {:ok, image} = Collections.create_image(collection_id, @image_create_attrs)
+    {:ok, image} = Core.create_image(collection_id, @image_create_attrs)
     image
   end
 
   def fixture(:collection) do
-    {:ok, collection} = Collections.create_collection(@collection_create_attrs)
+    {:ok, collection} = Core.create_collection(@collection_create_attrs)
     collection
   end
 

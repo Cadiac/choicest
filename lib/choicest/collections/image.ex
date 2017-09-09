@@ -1,9 +1,9 @@
-defmodule Choicest.Collections.Image do
+defmodule Choicest.Core.Image do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Choicest.Collections.Image
-  alias Choicest.Collections.Comparison
-  alias Choicest.Collections.Collection
+  alias Choicest.Core.Image
+  alias Choicest.Core.Comparison
+  alias Choicest.Core.Collection
 
   alias Choicest.Utils
 

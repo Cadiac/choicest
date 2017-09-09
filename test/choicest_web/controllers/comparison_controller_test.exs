@@ -1,20 +1,20 @@
 defmodule ChoicestWeb.ComparisonControllerTest do
   use ChoicestWeb.ConnCase
 
-  alias Choicest.Collections
-  alias Choicest.Collections.Image
+  alias Choicest.Core
+  alias Choicest.Core.Image
 
   @missing_image 99999999
   @image_create_attrs %{"description" => "some description", "original_filename" => "some original_filename", "content_type" => "image/jpeg", "file_size" => 42, "uploaded_by" => "uploaded_by"}
   @collection_create_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}
 
   def fixture(:collection) do
-    {:ok, collection} = Collections.create_collection(@collection_create_attrs)
+    {:ok, collection} = Core.create_collection(@collection_create_attrs)
     collection
   end
 
   def fixture(:image, collection_id) do
-    {:ok, image} = Collections.create_image(collection_id, @image_create_attrs)
+    {:ok, image} = Core.create_image(collection_id, @image_create_attrs)
     image
   end
 
@@ -22,7 +22,7 @@ defmodule ChoicestWeb.ComparisonControllerTest do
     %Image{id: winner_id} = fixture(:image, collection_id)
     %Image{id: loser_id} = fixture(:image, collection_id)
 
-    {:ok, comparison} = Collections.create_comparison(collection_id, winner_id, loser_id)
+    {:ok, comparison} = Core.create_comparison(collection_id, winner_id, loser_id)
 
     comparison
   end

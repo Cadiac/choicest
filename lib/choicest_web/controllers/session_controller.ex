@@ -1,10 +1,10 @@
 defmodule ChoicestWeb.SessionController do
   use ChoicestWeb, :controller
 
-  alias Choicest.Collections
+  alias Choicest.Core
 
   def create(conn, %{"session" => %{"id" => id, "password" => password}}) do
-    case Collections.verify_collection_credentials(id, password) do
+    case Core.verify_collection_credentials(id, password) do
       {:ok, collection} ->
         { :ok, jwt, _ } = Guardian.encode_and_sign(collection, :api)
         conn
