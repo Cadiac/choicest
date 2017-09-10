@@ -4,7 +4,7 @@ defmodule ChoicestWeb.CollectionControllerTest do
   alias Choicest.Core
   alias Choicest.Core.Collection
 
-  @create_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}
+  @create_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true, "password" => "hunter2"}
   @update_attrs %{"description" => "some updated description", "name" => "some updated name", "voting_active" => false}
   @invalid_attrs %{"description" => nil, "name" => nil, "voting_active" => nil, "slug" => nil}
   @too_long_name_attrs %{"description" => "some description", "name" => "some way too long name that is over the character limit", "voting_active" => true}
@@ -59,8 +59,12 @@ defmodule ChoicestWeb.CollectionControllerTest do
   describe "update collection" do
     setup [:create_collection]
 
-    test "renders collection when data is valid", %{conn: conn, collection: %Collection{id: id} = collection} do
-      conn = put conn, "/api/collections/#{collection.id}", collection: @update_attrs
+    test "renders collection when data is valid", %{conn: conn, collection: %Collection{id: id} = collection, jwt: jwt} do
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{jwt}")
+        |> put("/api/collections/#{collection.id}", collection: @update_attrs)
+
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get conn, "/api/collections/#{collection.id}"
@@ -77,8 +81,12 @@ defmodule ChoicestWeb.CollectionControllerTest do
       assert slug == "some-updated-name"
     end
 
-    test "renders errors when data is invalid", %{conn: conn, collection: %Collection{id: id}} do
-      conn = put conn, "/api/collections/#{id}", collection: @invalid_attrs
+    test "renders errors when data is invalid", %{conn: conn, collection: %Collection{id: id}, jwt: jwt} do
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{jwt}")
+        |> put("/api/collections/#{id}", collection: @invalid_attrs)
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -86,8 +94,12 @@ defmodule ChoicestWeb.CollectionControllerTest do
   describe "delete collection" do
     setup [:create_collection]
 
-    test "deletes chosen collection", %{conn: conn, collection: %Collection{id: id}} do
-      conn = delete conn, "/api/collections/#{id}"
+    test "deletes chosen collection", %{conn: conn, collection: %Collection{id: id}, jwt: jwt} do
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{jwt}")
+        |> delete("/api/collections/#{id}")
+
       assert response(conn, 204)
       assert_error_sent 404, fn ->
         get conn, "/api/collections/#{id}"
@@ -127,6 +139,15 @@ defmodule ChoicestWeb.CollectionControllerTest do
 
   defp create_collection(_) do
     collection = fixture(:collection)
-    {:ok, collection: collection}
+
+    %{"jwt" => jwt} = authenticate(collection.id, @create_attrs["password"])
+    {:ok, collection: collection, jwt: jwt}
   end
+
+  defp authenticate(id, password) do
+    conn = Phoenix.ConnTest.build_conn()
+    conn = post conn, "/api/login", session: %{id: id, password: password}
+    json_response(conn, 200)
+  end
+
 end

@@ -8,7 +8,7 @@ defmodule ChoicestWeb.ImageControllerTest do
   @image_update_attrs %{description: "some updated description"}
   @image_invalid_attrs %{description: nil, original_filename: nil, content_type: nil, file_size: nil, uploaded_by: nil}
 
-  @collection_create_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}
+  @collection_create_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true, "password" => "hunter2"}
 
   def fixture(:image, collection_id) do
     {:ok, image} = Core.create_image(collection_id, @image_create_attrs)
@@ -36,12 +36,15 @@ defmodule ChoicestWeb.ImageControllerTest do
   describe "create image" do
     setup [:create_collection]
 
-    test "creates image when data is valid", %{conn: conn, collection: collection} do
-      conn = post conn, "/api/collections/#{collection.id}/images", image: @image_create_attrs
+    test "creates image when data is valid", %{conn: conn, collection: collection, jwt: jwt} do
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{jwt}")
+        |> post("/api/collections/#{collection.id}/images", image: @image_create_attrs)
+
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get conn, "/api/collections/#{collection.id}/images/#{id}"
-
       assert %{
         "id" => _id,
         "description" => _description,
@@ -58,8 +61,12 @@ defmodule ChoicestWeb.ImageControllerTest do
       assert "https://s3-#{region}.amazonaws.com/#{bucket}/#{collection.id}/#{filename}" == url
     end
 
-    test "returns errors when data is invalid", %{conn: conn, collection: collection} do
-      conn = post conn, "/api/collections/#{collection.id}/images", image: @image_invalid_attrs
+    test "returns errors when data is invalid", %{conn: conn, collection: collection, jwt: jwt} do
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{jwt}")
+        |> post("/api/collections/#{collection.id}/images", image: @image_invalid_attrs)
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -67,8 +74,12 @@ defmodule ChoicestWeb.ImageControllerTest do
   describe "update image" do
     setup [:create_image]
 
-    test "updates image when data is valid", %{conn: conn, image: %Image{id: id} = image, collection: collection} do
-      conn = put conn, "/api/collections/#{collection.id}/images/#{image.id}", image: @image_update_attrs
+    test "updates image when data is valid", %{conn: conn, image: %Image{id: id} = image, collection: collection, jwt: jwt} do
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{jwt}")
+        |> put("/api/collections/#{collection.id}/images/#{image.id}", image: @image_update_attrs)
+
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get conn, "/api/collections/#{collection.id}/images/#{image.id}"
@@ -76,8 +87,12 @@ defmodule ChoicestWeb.ImageControllerTest do
       assert description == @image_update_attrs.description
     end
 
-    test "returns errors when data is invalid", %{conn: conn, image: image, collection: collection} do
-      conn = put conn, "/api/collections/#{collection.id}/images/#{image.id}", image: @image_invalid_attrs
+    test "returns errors when data is invalid", %{conn: conn, image: image, collection: collection, jwt: jwt} do
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{jwt}")
+        |> put("/api/collections/#{collection.id}/images/#{image.id}", image: @image_invalid_attrs)
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -85,8 +100,12 @@ defmodule ChoicestWeb.ImageControllerTest do
   describe "delete image" do
     setup [:create_image]
 
-    test "deletes chosen image", %{conn: conn, image: image, collection: collection} do
-      conn = delete conn, "/api/collections/#{collection.id}/images/#{image.id}"
+    test "deletes chosen image", %{conn: conn, image: image, collection: collection, jwt: jwt} do
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{jwt}")
+        |> delete("/api/collections/#{collection.id}/images/#{image.id}")
+
       assert response(conn, 204)
       assert_error_sent 404, fn ->
         get conn, "/api/collections/#{collection.id}/images/#{image.id}"
@@ -96,13 +115,23 @@ defmodule ChoicestWeb.ImageControllerTest do
 
   defp create_collection(_) do
     collection = fixture(:collection)
-    {:ok, collection: collection}
+
+    %{"jwt" => jwt} = authenticate(collection.id, @collection_create_attrs["password"])
+    {:ok, collection: collection, jwt: jwt}
   end
 
   defp create_image(_) do
     collection = fixture(:collection)
     image = fixture(:image, collection.id)
+    %{"jwt" => jwt} = authenticate(collection.id, @collection_create_attrs["password"])
 
-    {:ok, image: image, collection: collection}
+    {:ok, image: image, collection: collection, jwt: jwt}
   end
+
+  defp authenticate(id, password) do
+    conn = Phoenix.ConnTest.build_conn()
+    conn = post conn, "/api/login", session: %{id: id, password: password}
+    json_response(conn, 200)
+  end
+
 end

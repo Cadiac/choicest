@@ -19,9 +19,9 @@ defmodule Choicest.CoreTest do
       collection
     end
 
-    test "list_Core/0 returns all Core" do
+    test "list_collections/0 returns all Core" do
       collection = collection_fixture()
-      assert Core.list_Core() == [collection]
+      assert Core.list_collections() == [collection]
     end
 
     test "get_collection!/1 returns the collection with given id" do
