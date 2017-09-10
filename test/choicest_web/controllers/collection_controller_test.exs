@@ -9,8 +9,15 @@ defmodule ChoicestWeb.CollectionControllerTest do
   @invalid_attrs %{"description" => nil, "name" => nil, "voting_active" => nil, "slug" => nil}
   @too_long_name_attrs %{"description" => "some description", "name" => "some way too long name that is over the character limit", "voting_active" => true}
 
+  @another_collection_attrs %{"description" => "some description", "name" => "some other name", "voting_active" => true, "password" => "hunter2"}
+
   def fixture(:collection) do
     {:ok, collection} = Core.create_collection(@create_attrs)
+    collection
+  end
+
+  def fixture(:another_collection) do
+    {:ok, collection} = Core.create_collection(@another_collection_attrs)
     collection
   end
 
@@ -89,6 +96,32 @@ defmodule ChoicestWeb.CollectionControllerTest do
 
       assert json_response(conn, 422)["errors"] != %{}
     end
+
+    test "returns 403 with missing authorization headers", %{conn: conn, collection: collection} do
+      conn = put conn, "/api/collections/#{collection.id}", collection: @update_attrs
+
+      assert json_response(conn, 403)["errors"] != %{}
+    end
+
+    test "returns 403 with invalid authorization headers", %{conn: conn, collection: collection} do
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer token")
+        |> put("/api/collections/#{collection.id}", collection: @update_attrs)
+
+      assert json_response(conn, 403)["errors"] != %{}
+    end
+
+    test "returns 403 with authorization headers to wrong collection", %{conn: conn, jwt: jwt} do
+      another = fixture(:another_collection)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{jwt}")
+        |> put("/api/collections/#{another.id}", collection: @update_attrs)
+
+      assert json_response(conn, 403)["errors"] != %{}
+    end
   end
 
   describe "delete collection" do
@@ -104,6 +137,32 @@ defmodule ChoicestWeb.CollectionControllerTest do
       assert_error_sent 404, fn ->
         get conn, "/api/collections/#{id}"
       end
+    end
+
+    test "returns 403 with missing authorization headers", %{conn: conn, collection: %Collection{id: id}} do
+      conn = delete conn, "/api/collections/#{id}"
+
+      assert json_response(conn, 403)["errors"] != %{}
+    end
+
+    test "returns 403 with invalid authorization headers", %{conn: conn, collection: %Collection{id: id}} do
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer token")
+        |> delete("/api/collections/#{id}")
+
+      assert json_response(conn, 403)["errors"] != %{}
+    end
+
+    test "returns 403 with authorization headers to wrong collection", %{conn: conn, jwt: jwt} do
+      another = fixture(:another_collection)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{jwt}")
+        |> delete("/api/collections/#{another.id}")
+
+      assert json_response(conn, 403)["errors"] != %{}
     end
   end
 
