@@ -4,7 +4,19 @@ defmodule ChoicestWeb.CollectionController do
   alias Choicest.Core
   alias Choicest.Core.Collection
 
+  require Logger
+
   action_fallback ChoicestWeb.FallbackController
+
+  defp ensure_collection_permissions(conn, collection_id) do
+    resource = Guardian.Plug.current_resource(conn)
+
+    if Integer.to_string(resource.id) == collection_id do
+      {:ok, collection_id}
+    else
+      {:error, "Collection id doesn't match token"}
+    end
+  end
 
   def index(conn, _params) do
     collections = Core.list_collections()
@@ -31,17 +43,31 @@ defmodule ChoicestWeb.CollectionController do
   end
 
   def update(conn, %{"id" => id, "collection" => collection_params}) do
-    collection = Core.get_collection!(id)
+    case ensure_collection_permissions(conn, id) do
+      {:ok, _} ->
+        collection = Core.get_collection!(id)
 
-    with {:ok, %Collection{} = collection} <- Core.update_collection(collection, collection_params) do
-      render(conn, "show.json", collection: collection)
+        with {:ok, %Collection{} = collection} <- Core.update_collection(collection, collection_params) do
+          render(conn, "show.json", collection: collection)
+        end
+      {:error, reason} ->
+        conn
+        |> put_status(403)
+        |> json(%{ error: reason })
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    collection = Core.get_collection!(id)
-    with {:ok, %Collection{}} <- Core.delete_collection(collection) do
-      send_resp(conn, :no_content, "")
+    case ensure_collection_permissions(conn, id) do
+      {:ok, _} ->
+        collection = Core.get_collection!(id)
+        with {:ok, %Collection{}} <- Core.delete_collection(collection) do
+          send_resp(conn, :no_content, "")
+        end
+      {:error, reason} ->
+        conn
+        |> put_status(403)
+        |> json(%{ error: reason })
     end
   end
 end
