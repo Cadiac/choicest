@@ -4,8 +4,8 @@ defmodule Choicest.ImageTest do
   alias Choicest.Core
 
   describe "images" do
-    alias Choicest.Core.Image
-    alias Choicest.Core.Collection
+    alias Choicest.Model.Image
+    alias Choicest.Model.Collection
 
     @valid_image_attrs %{description: "some description", original_filename: "some original_filename", content_type: "image/jpeg", file_size: 42, uploaded_by: "uploaded_by"}
     @update_image_attrs %{description: "some updated description"}

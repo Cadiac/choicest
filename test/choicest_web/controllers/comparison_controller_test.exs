@@ -2,7 +2,7 @@ defmodule ChoicestWeb.ComparisonControllerTest do
   use ChoicestWeb.ConnCase
 
   alias Choicest.Core
-  alias Choicest.Core.Image
+  alias Choicest.Model.Image
 
   @missing_image 99999999
   @image_create_attrs %{"description" => "some description", "original_filename" => "some original_filename", "content_type" => "image/jpeg", "file_size" => 42, "uploaded_by" => "uploaded_by"}

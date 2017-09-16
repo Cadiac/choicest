@@ -2,7 +2,7 @@ defmodule ChoicestWeb.ImageControllerTest do
   use ChoicestWeb.ConnCase
 
   alias Choicest.Core
-  alias Choicest.Core.Image
+  alias Choicest.Model.Image
 
   @image_create_attrs %{description: "some description", original_filename: "some original_filename", content_type: "image/jpeg", file_size: 42, uploaded_by: "uploaded_by"}
   @image_update_attrs %{description: "some updated description"}

@@ -2,7 +2,7 @@ defmodule ChoicestWeb.ComparisonController do
   use ChoicestWeb, :controller
 
   alias Choicest.Core
-  alias Choicest.Core.Comparison
+  alias Choicest.Model.Comparison
 
   action_fallback ChoicestWeb.FallbackController
 

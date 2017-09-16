@@ -4,9 +4,9 @@ defmodule Choicest.ComparisonsTest do
   alias Choicest.Core
 
   describe "comparisons" do
-    alias Choicest.Core.Image
-    alias Choicest.Core.Comparison
-    alias Choicest.Core.Collection
+    alias Choicest.Model.Image
+    alias Choicest.Model.Comparison
+    alias Choicest.Model.Collection
 
     @valid_image_attrs %{description: "some description", original_filename: "some original_filename", content_type: "image/jpeg", file_size: 42, uploaded_by: "uploaded_by"}
     @valid_collection_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}

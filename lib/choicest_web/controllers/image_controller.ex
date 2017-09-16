@@ -2,7 +2,7 @@ defmodule ChoicestWeb.ImageController do
   use ChoicestWeb, :controller
 
   alias Choicest.Core
-  alias Choicest.Core.Image
+  alias Choicest.Model.Image
 
   action_fallback ChoicestWeb.FallbackController
 

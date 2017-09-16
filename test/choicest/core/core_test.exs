@@ -4,7 +4,7 @@ defmodule Choicest.CoreTest do
   alias Choicest.Core
 
   describe "Core" do
-    alias Choicest.Core.Collection
+    alias Choicest.Model.Collection
 
     @valid_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}
     @update_attrs %{"description" => "some updated description", "name" => "some updated name", "voting_active" => false}

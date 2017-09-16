@@ -6,9 +6,9 @@ defmodule Choicest.Core do
   import Ecto.Query, warn: false
   alias Choicest.Repo
 
-  alias Choicest.Core.Collection
-  alias Choicest.Core.Image
-  alias Choicest.Core.Comparison
+  alias Choicest.Model.Collection
+  alias Choicest.Model.Image
+  alias Choicest.Model.Comparison
 
   import Comeonin.Argon2, only: [checkpw: 2, dummy_checkpw: 0]
 

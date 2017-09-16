@@ -2,7 +2,7 @@ defmodule Choicest.GuardianSerializer do
   @behaviour Guardian.Serializer
 
   alias Choicest.Repo
-  alias Choicest.Core.Collection
+  alias Choicest.Model.Collection
 
   def for_token(collection = %Collection{}), do: { :ok, "Collection:#{collection.id}" }
   def for_token(_), do: { :error, "Unknown resource type" }

@@ -2,7 +2,7 @@ defmodule ChoicestWeb.SessionControllerTest do
   use ChoicestWeb.ConnCase
 
   alias Choicest.Core
-  alias Choicest.Core.Collection
+  alias Choicest.Model.Collection
 
   @collection_create_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true, "password" => "hunter2"}
 

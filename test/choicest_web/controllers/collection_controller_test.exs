@@ -2,7 +2,7 @@ defmodule ChoicestWeb.CollectionControllerTest do
   use ChoicestWeb.ConnCase
 
   alias Choicest.Core
-  alias Choicest.Core.Collection
+  alias Choicest.Model.Collection
 
   @create_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true, "password" => "hunter2"}
   @update_attrs %{"description" => "some updated description", "name" => "some updated name", "voting_active" => false}

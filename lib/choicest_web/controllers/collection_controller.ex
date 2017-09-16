@@ -2,7 +2,7 @@ defmodule ChoicestWeb.CollectionController do
   use ChoicestWeb, :controller
 
   alias Choicest.Core
-  alias Choicest.Core.Collection
+  alias Choicest.Model.Collection
 
   require Logger
 
