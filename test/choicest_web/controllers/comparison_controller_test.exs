@@ -7,9 +7,15 @@ defmodule ChoicestWeb.ComparisonControllerTest do
   @missing_image 99999999
   @image_create_attrs %{"description" => "some description", "original_filename" => "some original_filename", "content_type" => "image/jpeg", "file_size" => 42, "uploaded_by" => "uploaded_by"}
   @collection_create_attrs %{"description" => "some description", "name" => "some name", "voting_active" => true}
+  @inactive_collection_attrs %{"description" => "some description", "name" => "some inactive", "voting_active" => false}
 
   def fixture(:collection) do
     {:ok, collection} = Core.create_collection(@collection_create_attrs)
+    collection
+  end
+
+  def fixture(:inactive) do
+    {:ok, collection} = Core.create_collection(@inactive_collection_attrs)
     collection
   end
 
@@ -56,6 +62,18 @@ defmodule ChoicestWeb.ComparisonControllerTest do
       assert_error_sent 404, fn ->
         post conn, "/api/collections/#{collection.id}/comparisons", %{winner_id: @missing_image, loser_id: @missing_image}
       end
+    end
+
+    test "returns error if collection is not active", %{conn: conn} do
+      collection = fixture(:inactive)
+
+      %Image{id: winner_id} = fixture(:image, collection.id)
+      %Image{id: loser_id} = fixture(:image, collection.id)
+
+      conn = post conn, "/api/collections/#{collection.id}/comparisons", %{winner_id: winner_id, loser_id: loser_id}
+
+      assert %{"error" => error} = json_response(conn, 403)
+      assert error == "Voting is not active"
     end
   end
 

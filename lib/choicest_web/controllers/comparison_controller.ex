@@ -17,11 +17,16 @@ defmodule ChoicestWeb.ComparisonController do
   end
 
   def create(conn, %{"collection_id" => collection_id, "winner_id" => winner_id, "loser_id" => loser_id}) do
-    with {:ok, %Comparison{} = comparison} <- Core.create_comparison(collection_id, winner_id, loser_id) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", "/api/comparisons/#{comparison.id}")
-      |> render("show.json", comparison: comparison)
+    case Core.create_comparison(collection_id, winner_id, loser_id) do
+      {:ok, %Comparison{} = comparison} ->
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", "/api/comparisons/#{comparison.id}")
+        |> render("show.json", comparison: comparison)
+      {:error, reason} ->
+        conn
+        |> put_status(403)
+        |> json(%{ error: reason })
     end
   end
 end

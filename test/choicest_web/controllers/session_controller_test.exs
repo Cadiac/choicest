@@ -35,6 +35,20 @@ defmodule ChoicestWeb.SessionControllerTest do
       assert %{"error" => error} = json_response(conn, 401)
       assert error == "Invalid collection id or password"
     end
+
+    test "returns 400 when parameters are missing from login", %{conn: conn} do
+      assert_error_sent 400, fn ->
+        post conn, "/api/login", session: %{id: 999999999}
+      end
+
+      assert_error_sent 400, fn ->
+        post conn, "/api/login", session: %{password: "hunter2"}
+      end
+
+      assert_error_sent 400, fn ->
+        post conn, "/api/login", session: %{}
+      end
+    end
   end
 
   defp create_collection(_) do

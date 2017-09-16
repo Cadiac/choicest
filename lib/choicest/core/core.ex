@@ -133,6 +133,9 @@ defmodule Choicest.Core do
       iex> create_comparison(collection_id, winner_id, loser_id)
       {:ok, %Comparison{}}
 
+      iex> create_comparison(inactive_collection_id, winner_id, loser_id)
+      {:error, "Voting is not active"}
+
       iex> create_comparison(collection_id, bad_winner_id, bad_loser_id)
       ** (Ecto.NoResultsError)
 
@@ -140,16 +143,20 @@ defmodule Choicest.Core do
   def create_comparison(collection_id, winner_id, loser_id) do
     collection = get_collection!(collection_id)
 
-    winner = get_image!(collection_id, winner_id)
-    loser = get_image!(collection_id, loser_id)
+    if collection.voting_active do
+      winner = get_image!(collection_id, winner_id)
+      loser = get_image!(collection_id, loser_id)
 
-    comparison = Ecto.build_assoc(winner, :wins)
-    comparison = Ecto.build_assoc(loser, :losses, Map.from_struct comparison)
-    comparison = Ecto.build_assoc(collection, :comparisons, Map.from_struct comparison)
+      comparison = Ecto.build_assoc(winner, :wins)
+      comparison = Ecto.build_assoc(loser, :losses, Map.from_struct comparison)
+      comparison = Ecto.build_assoc(collection, :comparisons, Map.from_struct comparison)
 
-    case Repo.insert(comparison) do
-      {:ok, comparison} ->
-        {:ok, comparison |> Repo.preload(:winner) |> Repo.preload(:loser)}
+      case Repo.insert(comparison) do
+        {:ok, comparison} ->
+          {:ok, comparison |> Repo.preload(:winner) |> Repo.preload(:loser)}
+      end
+    else
+      {:error, "Voting is not active"}
     end
   end
 

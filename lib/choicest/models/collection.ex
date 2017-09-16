@@ -17,7 +17,7 @@ defmodule Choicest.Model.Collection do
     field :description, :string
     field :name, :string
     field :slug, CollectionSlug.Type
-    field :voting_active, :boolean, default: false
+    field :voting_active, :boolean, default: true
 
     field :password_hash, :string
     field :password, :string, virtual: true, default: Utils.random_string(16)
