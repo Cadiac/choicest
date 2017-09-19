@@ -21,7 +21,7 @@ defmodule ChoicestWeb.ComparisonView do
   end
 
   def render("show.json", %{comparison: comparison}) do
-    %{data: render_one(comparison, ComparisonView, "comparison.json")}
+    render_one(comparison, ComparisonView, "comparison.json")
   end
 
   def render("comparison.json", %{comparison: comparison}) do

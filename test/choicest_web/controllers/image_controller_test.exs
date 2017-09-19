@@ -35,7 +35,7 @@ defmodule ChoicestWeb.ImageControllerTest do
 
     test "lists all images", %{conn: conn, collection: collection} do
       conn = get conn, "/api/collections/#{collection.id}/images"
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200) == []
     end
   end
 
@@ -48,7 +48,7 @@ defmodule ChoicestWeb.ImageControllerTest do
         |> put_req_header("authorization", "Bearer #{jwt}")
         |> post("/api/collections/#{collection.id}/images", image: @image_create_attrs)
 
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      assert %{"id" => id} = json_response(conn, 201)
 
       conn = get conn, "/api/collections/#{collection.id}/images/#{id}"
       assert %{
@@ -59,7 +59,7 @@ defmodule ChoicestWeb.ImageControllerTest do
         "url" => url,
         "content_type" => _content_type,
         "file_size" => _file_size,
-        "uploaded_by" => _uploaded_by} = json_response(conn, 200)["data"]
+        "uploaded_by" => _uploaded_by} = json_response(conn, 200)
 
       region = System.get_env("AWS_REGION")
       bucket = System.get_env("AWS_S3_COLLECTION_BUCKET")
@@ -112,10 +112,10 @@ defmodule ChoicestWeb.ImageControllerTest do
         |> put_req_header("authorization", "Bearer #{jwt}")
         |> put("/api/collections/#{collection.id}/images/#{image.id}", image: @image_update_attrs)
 
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+      assert %{"id" => ^id} = json_response(conn, 200)
 
       conn = get conn, "/api/collections/#{collection.id}/images/#{image.id}"
-      assert %{"description" => description} = json_response(conn, 200)["data"]
+      assert %{"description" => description} = json_response(conn, 200)
       assert description == @image_update_attrs.description
     end
 

@@ -28,14 +28,14 @@ defmodule ChoicestWeb.CollectionControllerTest do
   describe "index" do
     test "lists all collections", %{conn: conn} do
       conn = get conn, "/api/collections"
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200) == []
     end
   end
 
   describe "create collection" do
     test "renders collection when data is valid", %{conn: conn} do
       conn = post conn, "/api/collections", collection: @create_attrs
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      assert %{"id" => id} = json_response(conn, 201)
 
       conn = get conn, "/api/collections/#{id}"
       assert %{
@@ -43,7 +43,7 @@ defmodule ChoicestWeb.CollectionControllerTest do
         "slug" => slug,
         "description" => description,
         "name" => name,
-        "voting_active" => voting_active} = json_response(conn, 200)["data"]
+        "voting_active" => voting_active} = json_response(conn, 200)
 
       assert description == @create_attrs["description"]
       assert name == @create_attrs["name"]
@@ -72,7 +72,7 @@ defmodule ChoicestWeb.CollectionControllerTest do
         |> put_req_header("authorization", "Bearer #{jwt}")
         |> put("/api/collections/#{collection.id}", collection: @update_attrs)
 
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+      assert %{"id" => ^id} = json_response(conn, 200)
 
       conn = get conn, "/api/collections/#{collection.id}"
       assert %{
@@ -80,7 +80,7 @@ defmodule ChoicestWeb.CollectionControllerTest do
         "description" => description,
         "name" => name,
         "voting_active" => voting_active,
-        "slug" => slug} = json_response(conn, 200)["data"]
+        "slug" => slug} = json_response(conn, 200)
 
       assert description == @update_attrs["description"]
       assert name == @update_attrs["name"]
@@ -171,7 +171,7 @@ defmodule ChoicestWeb.CollectionControllerTest do
 
     test "finds existing collection by slug", %{conn: conn, collection: %Collection{slug: slug}} do
       conn = get conn, "/api/collections/by_slug/#{slug}"
-      assert json_response(conn, 200)["data"] != %{}
+      assert json_response(conn, 200) != %{}
     end
 
     test "returns 404 when collection doesn't exist", %{conn: conn} do
@@ -186,7 +186,7 @@ defmodule ChoicestWeb.CollectionControllerTest do
 
     test "finds existing collection by id", %{conn: conn, collection: %Collection{id: id}} do
       conn = get conn, "/api/collections/#{id}"
-      assert json_response(conn, 200)["data"] != %{}
+      assert json_response(conn, 200) != %{}
     end
 
     test "returns 404 when collection doesn't exist", %{conn: conn} do

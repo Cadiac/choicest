@@ -43,8 +43,8 @@ defmodule ChoicestWeb.ComparisonControllerTest do
     test "creates comparison between images", %{conn: conn, winner_id: winner_id, loser_id: loser_id, collection: collection} do
       conn = post conn, "/api/collections/#{collection.id}/comparisons", %{winner_id: winner_id, loser_id: loser_id}
 
-      assert %{"winner" => winner} = json_response(conn, 201)["data"]
-      assert %{"loser" => loser} = json_response(conn, 201)["data"]
+      assert %{"winner" => winner} = json_response(conn, 201)
+      assert %{"loser" => loser} = json_response(conn, 201)
 
       assert winner["id"] == winner_id
       assert loser["id"] == loser_id
@@ -83,9 +83,9 @@ defmodule ChoicestWeb.ComparisonControllerTest do
     test "gets existing comparison by id", %{conn: conn, comparison: comparison, collection: collection} do
       conn = get conn, "/api/collections/#{collection.id}/comparisons/#{comparison.id}"
 
-      assert %{"id" => id} = json_response(conn, 200)["data"]
-      assert %{"winner" => winner} = json_response(conn, 200)["data"]
-      assert %{"loser" => loser} = json_response(conn, 200)["data"]
+      assert %{"id" => id} = json_response(conn, 200)
+      assert %{"winner" => winner} = json_response(conn, 200)
+      assert %{"loser" => loser} = json_response(conn, 200)
 
       assert winner["id"] == comparison.winner_id
       assert loser["id"] == comparison.loser_id

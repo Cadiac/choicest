@@ -45,7 +45,8 @@ defmodule Choicest.Mixfile do
       {:ecto_autoslug_field, "~> 0.3"},
       {:guardian, "~> 0.14"},
       {:comeonin, "~> 4.0"},
-      {:argon2_elixir, "~> 1.2"}
+      {:argon2_elixir, "~> 1.2"},
+      {:cors_plug, "~> 1.2"}
     ]
   end
 

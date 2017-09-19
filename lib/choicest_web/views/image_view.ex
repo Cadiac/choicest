@@ -3,11 +3,11 @@ defmodule ChoicestWeb.ImageView do
   alias ChoicestWeb.ImageView
 
   def render("index.json", %{images: images}) do
-    %{data: render_many(images, ImageView, "image.json")}
+    render_many(images, ImageView, "image.json")
   end
 
   def render("show.json", %{image: image}) do
-    %{data: render_one(image, ImageView, "image.json")}
+    render_one(image, ImageView, "image.json")
   end
 
   def render("image.json", %{image: image}) do
@@ -22,6 +22,6 @@ defmodule ChoicestWeb.ImageView do
   end
 
   def render("upload.json", %{image: image, url: url}) do
-    %{data: render_one(image, ImageView, "image.json"), signedUrl: url}
+    Map.merge(render_one(image, ImageView, "image.json"), %{signedUrl: url})
   end
 end

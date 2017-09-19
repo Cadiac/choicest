@@ -11,10 +11,10 @@ defmodule ChoicestWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug CORSPlug
   end
 
   pipeline :auth do
-    plug :accepts, ["json"]
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"
     plug Guardian.Plug.LoadResource
     plug Guardian.Plug.EnsureResource
@@ -45,6 +45,7 @@ defmodule ChoicestWeb.Router do
 
   # Authenticated routes
   scope "/api", ChoicestWeb do
+    pipe_through :api
     pipe_through :auth
 
     resources "/collections", CollectionController, only: [:update, :delete] do
