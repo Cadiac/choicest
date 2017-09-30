@@ -51,6 +51,26 @@ or for more verbose run use
 mix test --trace
 ```
 
+## Debugging
+
+To debug code, you can stop the execution at a desired place by adding
+
+```
+require IEx;
+
+# Debugger will stop here
+IEx.pry
+```
+
+Next start a new IEx session with
+
+```
+iex -S mix phx.server
+````
+
+Execution should stop at `IEx.pry`, and you can restart it with `respawn`.
+
+
 ### Travis
 
 This project supports Travis CI for automatically running tests. Remember to setup your environment variables there too!
