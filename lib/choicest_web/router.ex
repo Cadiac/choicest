@@ -23,7 +23,7 @@ defmodule ChoicestWeb.Router do
   scope "/", ChoicestWeb do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
+    # get "/", PageController, :index
   end
 
   # Public routes
